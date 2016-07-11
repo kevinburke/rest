@@ -71,3 +71,23 @@ func BadRequest(w http.ResponseWriter, r *http.Request, err *Error) error {
 	w.WriteHeader(http.StatusBadRequest)
 	return json.NewEncoder(w).Encode(err)
 }
+
+var notAllowed = Error{
+	Title:      "Method not allowed",
+	ID:         "method_not_allowed",
+	StatusCode: http.StatusMethodNotAllowed,
+}
+
+// NotAllowed returns a generic HTTP 405 Not Allowed status and response body
+// to the client.
+func NotAllowed(w http.ResponseWriter, r *http.Request) error {
+	e := notAllowed
+	e.Instance = r.URL.Path
+	w.WriteHeader(http.StatusMethodNotAllowed)
+	return json.NewEncoder(w).Encode(e)
+}
+
+func Forbidden(w http.ResponseWriter, r *http.Request, err *Error) error {
+	w.WriteHeader(http.StatusForbidden)
+	return json.NewEncoder(w).Encode(err)
+}
