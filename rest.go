@@ -60,6 +60,19 @@ func ServerError(w http.ResponseWriter, r *http.Request, err error) error {
 	return json.NewEncoder(w).Encode(serverError)
 }
 
+var notFound = Error{
+	Title:      "Resource not found",
+	ID:         "not_found",
+	StatusCode: http.StatusNotFound,
+}
+
+func NotFound(w http.ResponseWriter, r *http.Request) error {
+	w.WriteHeader(http.StatusNotFound)
+	nf := notFound
+	nf.Instance = r.URL.Path
+	return json.NewEncoder(w).Encode(nf)
+}
+
 func BadRequest(w http.ResponseWriter, r *http.Request, err *Error) error {
 	if err == nil {
 		panic("rest: no error to write")
