@@ -135,7 +135,7 @@ func (c *Client) Do(r *http.Request, v interface{}) error {
 		}
 	}
 
-	if v == nil {
+	if v == nil || res.StatusCode == http.StatusNoContent {
 		return nil
 	} else {
 		return json.Unmarshal(resBody, v)

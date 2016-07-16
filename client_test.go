@@ -52,7 +52,7 @@ func TestPostError(t *testing.T) {
 	client := NewClient("foo", "bar", s.URL)
 	req, err := client.NewRequest("POST", "/", nil)
 	assertNotError(t, err, "")
-	err = client.Do(req, &struct{}{})
+	err = client.Do(req, nil)
 	assertError(t, err, "")
 	assertEquals(t, err.Error(), "bad request")
 }
