@@ -13,17 +13,17 @@ import (
 	"time"
 )
 
-const Version = "0.1"
+const Version = "0.2"
 
 var defaultTimeout = 6500 * time.Millisecond
 var defaultHttpClient = &http.Client{Timeout: defaultTimeout}
 
 // Client is a generic Rest client for making HTTP requests.
 type Client struct {
-	ID     string
-	Token  string
-	Client *http.Client
-	Base   string
+	ID	string
+	Token	string
+	Client	*http.Client
+	Base	string
 }
 
 // NewClient returns a new Client with the given user and password. Base is the
@@ -31,10 +31,10 @@ type Client struct {
 // set to 6.5 seconds.
 func NewClient(user, pass, base string) *Client {
 	return &Client{
-		ID:     user,
-		Token:  pass,
-		Client: defaultHttpClient,
-		Base:   base,
+		ID:	user,
+		Token:	pass,
+		Client:	defaultHttpClient,
+		Base:	base,
 	}
 }
 
@@ -114,8 +114,8 @@ func (c *Client) Do(r *http.Request, v interface{}) error {
 
 		if e, ok := errMap["title"]; ok {
 			err := &Error{
-				Title:      e.(string),
-				StatusCode: res.StatusCode,
+				Title:		e.(string),
+				StatusCode:	res.StatusCode,
 			}
 			if detail, ok := errMap["detail"]; ok {
 				err.Detail = detail.(string)
