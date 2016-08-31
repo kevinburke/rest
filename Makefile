@@ -3,3 +3,6 @@ test:
 
 race-test:
 	go test -race ./...
+
+vet: 
+	go vet ./...
