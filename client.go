@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const Version = "0.2"
+const Version = "0.3"
 
 var defaultTimeout = 6500 * time.Millisecond
 var defaultHttpClient = &http.Client{Timeout: defaultTimeout}
