@@ -1,3 +1,4 @@
+// Package rest implements middlewares and a HTTP client for API consumption.
 package rest
 
 import (
