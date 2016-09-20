@@ -1,10 +1,9 @@
-// Package rest implements middlewares and a HTTP client for API consumption.
+// Package rest implements responses and a HTTP client for API consumption.
 package rest
 
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/kevinburke/handlers"
@@ -67,6 +66,7 @@ var notFound = Error{
 	StatusCode: http.StatusNotFound,
 }
 
+// NotFound returns a 404 Not Found error to the client.
 func NotFound(w http.ResponseWriter, r *http.Request) error {
 	w.WriteHeader(http.StatusNotFound)
 	nf := notFound
@@ -74,6 +74,7 @@ func NotFound(w http.ResponseWriter, r *http.Request) error {
 	return json.NewEncoder(w).Encode(nf)
 }
 
+// BadRequest logs a 400 error and then returns a 400 response to the client.
 func BadRequest(w http.ResponseWriter, r *http.Request, err *Error) error {
 	if err == nil {
 		panic("rest: no error to write")
@@ -81,7 +82,7 @@ func BadRequest(w http.ResponseWriter, r *http.Request, err *Error) error {
 	if err.StatusCode == 0 {
 		err.StatusCode = http.StatusBadRequest
 	}
-	log.Printf("400: %s %s: %s", r.Method, r.URL.Path, err.Error())
+	handlers.Logger.Info(fmt.Sprintf("400: %s", err.Error()), "method", r.Method, "path", r.URL.Path)
 	w.WriteHeader(http.StatusBadRequest)
 	return json.NewEncoder(w).Encode(err)
 }
@@ -101,6 +102,8 @@ func NotAllowed(w http.ResponseWriter, r *http.Request) error {
 	return json.NewEncoder(w).Encode(e)
 }
 
+// Forbidden returns a 403 Forbidden status code to the client, with the given
+// Error object in the response body.
 func Forbidden(w http.ResponseWriter, r *http.Request, err *Error) error {
 	w.WriteHeader(http.StatusForbidden)
 	return json.NewEncoder(w).Encode(err)

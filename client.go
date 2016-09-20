@@ -55,8 +55,8 @@ func (c *Client) DialSocket(socket string) {
 	c.Client.Transport = transport
 }
 
-// NewRequest creates a new Request and sets basic auth based on
-// the client's authentication information.
+// NewRequest creates a new Request and sets basic auth based on the client's
+// authentication information.
 func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request, error) {
 	req, err := http.NewRequest(method, c.Base+path, body)
 	if err != nil {
@@ -73,7 +73,9 @@ func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request,
 }
 
 // Do performs the HTTP request. If the HTTP response is in the 2xx range,
-// Unmarshal the response body into v, otherwise return an error.
+// Unmarshal the response body into v. If the response status code is 400 or
+// above, attempt to Unmarshal the response into an Error. Otherwise return
+// a generic http error.
 func (c *Client) Do(r *http.Request, v interface{}) error {
 	b := new(bytes.Buffer)
 	if os.Getenv("DEBUG_HTTP_TRAFFIC") == "true" || os.Getenv("DEBUG_HTTP_REQUEST") == "true" {
