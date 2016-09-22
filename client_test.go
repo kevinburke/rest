@@ -23,6 +23,7 @@ func TestPost(t *testing.T) {
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user, pass, ok = r.BasicAuth()
 		requestUrl = r.URL
+		assertEquals(t, r.Header.Get("Content-Type"), "application/json; charset=utf-8")
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusAccepted)
 		w.Write([]byte("{}"))

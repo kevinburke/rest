@@ -13,6 +13,11 @@ import (
 	"time"
 )
 
+type UploadType string
+
+var JSON UploadType = "application/json"
+var FormURLEncoded UploadType = "application/x-www-form-urlencoded"
+
 const Version = "0.5"
 
 var defaultTimeout = 6500 * time.Millisecond
@@ -20,10 +25,11 @@ var defaultHttpClient = &http.Client{Timeout: defaultTimeout}
 
 // Client is a generic Rest client for making HTTP requests.
 type Client struct {
-	ID     string
-	Token  string
-	Client *http.Client
-	Base   string
+	ID         string
+	Token      string
+	Client     *http.Client
+	Base       string
+	UploadType UploadType
 }
 
 // NewClient returns a new Client with the given user and password. Base is the
@@ -31,10 +37,11 @@ type Client struct {
 // set to 6.5 seconds.
 func NewClient(user, pass, base string) *Client {
 	return &Client{
-		ID:     user,
-		Token:  pass,
-		Client: defaultHttpClient,
-		Base:   base,
+		ID:         user,
+		Token:      pass,
+		Client:     defaultHttpClient,
+		Base:       base,
+		UploadType: JSON,
 	}
 }
 
@@ -66,8 +73,14 @@ func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request,
 		req.SetBasicAuth(c.ID, c.Token)
 	}
 	req.Header.Add("User-Agent", fmt.Sprintf("rest-client/%s (https://github.com/kevinburke/rest)", Version))
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Accept-Charset", "utf-8")
 	if method == "POST" || method == "PUT" {
-		req.Header.Add("Content-Type", "application/json; charset=utf-8")
+		uploadType := c.UploadType
+		if uploadType == "" {
+			uploadType = JSON
+		}
+		req.Header.Add("Content-Type", fmt.Sprintf("%s; charset=utf-8", uploadType))
 	}
 	return req, nil
 }
