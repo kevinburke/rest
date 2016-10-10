@@ -108,3 +108,8 @@ func Forbidden(w http.ResponseWriter, r *http.Request, err *Error) error {
 	w.WriteHeader(http.StatusForbidden)
 	return json.NewEncoder(w).Encode(err)
 }
+
+func NoContent(w http.ResponseWriter) {
+	w.Header().Del("Content-Type")
+	w.WriteHeader(http.StatusNoContent)
+}

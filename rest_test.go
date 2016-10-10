@@ -64,3 +64,16 @@ func TestBadRequest(t *testing.T) {
 		t.Errorf("expected ID to be %s, got %s", "missing_widget", e.ID)
 	}
 }
+
+func TestNoContent(t *testing.T) {
+	t.Parallel()
+	w := httptest.NewRecorder()
+	w.Header().Set("Content-Type", "application/json")
+	NoContent(w)
+	if w.Code != 204 {
+		t.Errorf("expected Code to be 204, got %d", w.Code)
+	}
+	if hdr := w.Header().Get("Content-Type"); hdr != "" {
+		t.Errorf("expected Content-Type to be empty, got %s", hdr)
+	}
+}
