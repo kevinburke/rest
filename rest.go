@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kevinburke/handlers"
+	log "github.com/inconshreveable/log15"
 )
+
+// Logger logs information about incoming requests.
+var Logger log.Logger = log.New()
 
 // Error implements the HTTP Problem spec laid out here:
 // https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03
@@ -48,14 +51,13 @@ var serverError = Error{
 	Title:      "Unexpected server error. Please try again",
 }
 
-// ServerError logs the error to handlers.Logger, and then responds to the
-// request with a generic 500 server error message. ServerError panics if err
-// is nil.
+// ServerError logs the error to the Logger, and then responds to the request
+// with a generic 500 server error message. ServerError panics if err is nil.
 func ServerError(w http.ResponseWriter, r *http.Request, err error) error {
 	if err == nil {
 		panic("rest: no error to log")
 	}
-	handlers.Logger.Info(fmt.Sprintf("500: %s %s: %s", r.Method, r.URL.Path, err))
+	Logger.Info(fmt.Sprintf("500: %s %s: %s", r.Method, r.URL.Path, err))
 	w.WriteHeader(http.StatusInternalServerError)
 	return json.NewEncoder(w).Encode(serverError)
 }
@@ -82,7 +84,7 @@ func BadRequest(w http.ResponseWriter, r *http.Request, err *Error) error {
 	if err.StatusCode == 0 {
 		err.StatusCode = http.StatusBadRequest
 	}
-	handlers.Logger.Info(fmt.Sprintf("400: %s", err.Error()), "method", r.Method, "path", r.URL.Path)
+	Logger.Info(fmt.Sprintf("400: %s", err.Error()), "method", r.Method, "path", r.URL.Path)
 	w.WriteHeader(http.StatusBadRequest)
 	return json.NewEncoder(w).Encode(err)
 }
@@ -91,6 +93,12 @@ var notAllowed = Error{
 	Title:      "Method not allowed",
 	ID:         "method_not_allowed",
 	StatusCode: http.StatusMethodNotAllowed,
+}
+
+var authenticate = Error{
+	Title:      "Unauthorized. Please include your API credentials",
+	ID:         "unauthorized",
+	StatusCode: http.StatusUnauthorized,
 }
 
 // NotAllowed returns a generic HTTP 405 Not Allowed status and response body
@@ -109,7 +117,16 @@ func Forbidden(w http.ResponseWriter, r *http.Request, err *Error) error {
 	return json.NewEncoder(w).Encode(err)
 }
 
+// NoContent returns a 204 No Content message.
 func NoContent(w http.ResponseWriter) {
 	w.Header().Del("Content-Type")
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func Unauthorized(w http.ResponseWriter, r *http.Request, domain string) error {
+	err := authenticate
+	err.Instance = r.URL.Path
+	w.Header().Set("WWW-Authenticate", fmt.Sprintf(`Basic realm="%s"`, domain))
+	w.WriteHeader(http.StatusUnauthorized)
+	return json.NewEncoder(w).Encode(err)
 }

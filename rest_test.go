@@ -77,3 +77,21 @@ func TestNoContent(t *testing.T) {
 		t.Errorf("expected Content-Type to be empty, got %s", hdr)
 	}
 }
+
+func TestUnauthorized(t *testing.T) {
+	t.Parallel()
+	w := httptest.NewRecorder()
+	w.Header().Set("Content-Type", "application/json")
+	req, _ := http.NewRequest("GET", "/", nil)
+	err := Unauthorized(w, req, "foo")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if w.Code != 401 {
+		t.Errorf("expected Code to be 401, got %d", w.Code)
+	}
+	expected := `Basic realm="foo"`
+	if hdr := w.Header().Get("WWW-Authenticate"); hdr != expected {
+		t.Errorf("expected WWW-Authenticate header to be %s, got %s", expected, hdr)
+	}
+}
