@@ -57,10 +57,17 @@ var handlerMu sync.RWMutex
 //
 // Despite registering the handler for the code, f is responsible for calling
 // WriteHeader(code) since it may want to set response headers first.
+//
+// To delete a Handler, call RegisterHandler with nil for the second argument.
 func RegisterHandler(code int, f http.HandlerFunc) {
 	handlerMu.Lock()
 	defer handlerMu.Unlock()
-	handlerMap[code] = f
+	switch f {
+	case nil:
+		delete(handlerMap, code)
+	default:
+		handlerMap[code] = f
+	}
 }
 
 // ServerError logs the error to the Logger, and then responds to the request

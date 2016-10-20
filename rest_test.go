@@ -81,7 +81,6 @@ func TestNoContent(t *testing.T) {
 func TestUnauthorized(t *testing.T) {
 	t.Parallel()
 	w := httptest.NewRecorder()
-	w.Header().Set("Content-Type", "application/json")
 	req, _ := http.NewRequest("GET", "/", nil)
 	Unauthorized(w, req, "foo")
 	if w.Code != 401 {
@@ -90,5 +89,15 @@ func TestUnauthorized(t *testing.T) {
 	expected := `Basic realm="foo"`
 	if hdr := w.Header().Get("WWW-Authenticate"); hdr != expected {
 		t.Errorf("expected WWW-Authenticate header to be %s, got %s", expected, hdr)
+	}
+}
+
+func TestRegisterNilHandlerDeletes(t *testing.T) {
+	RegisterHandler(500, nil)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	ServerError(w, req, errors.New("bad"))
+	if ctype := w.Header().Get("Content-Type"); ctype != jsonContentType {
+		t.Errorf("expected default JSON content-type, got %s", ctype)
 	}
 }
