@@ -110,15 +110,3 @@ func TestSocket(t *testing.T) {
 	assertEquals(t, b.Message, "hello world")
 	ch <- true
 }
-
-func ExampleClient() {
-	client := NewClient("jobs", "secretpassword", "http://ipinfo.io")
-	req, _ := client.NewRequest("GET", "/json", nil)
-	type resp struct {
-		City string `json:"city"`
-		Ip   string `json:"ip"`
-	}
-	var r resp
-	client.Do(req, &r)
-	fmt.Println(r.Ip)
-}
