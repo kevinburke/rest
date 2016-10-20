@@ -2,7 +2,10 @@ package rest
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"net"
@@ -51,11 +54,29 @@ func TestPostError(t *testing.T) {
 	}))
 	defer s.Close()
 	client := NewClient("foo", "bar", s.URL)
-	req, err := client.NewRequest("POST", "/", nil)
-	assertNotError(t, err, "")
-	err = client.Do(req, nil)
-	assertError(t, err, "")
-	assertEquals(t, err.Error(), "bad request")
+	req, _ := client.NewRequest("POST", "/", nil)
+	err := client.Do(req, nil)
+	assertError(t, err, "Making the request")
+	rerr, ok := err.(*Error)
+	assert(t, ok, "converting err to rest.Error")
+	assertEquals(t, rerr.Title, "bad request")
+	assertEquals(t, rerr.ID, "something_bad")
+}
+
+func TestCustomErrorParser(t *testing.T) {
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(400)
+	}))
+	client := NewClient("foo", "bar", s.URL)
+	client.ErrorParser = func(resp *http.Response) error {
+		defer resp.Body.Close()
+		io.Copy(ioutil.Discard, resp.Body)
+		return errors.New("custom error")
+	}
+	req, _ := client.NewRequest("GET", "/", nil)
+	err := client.Do(req, nil)
+	assertError(t, err, "expected non-nil error from Do")
+	assertEquals(t, err.Error(), "custom error")
 }
 
 var r *rand.Rand
