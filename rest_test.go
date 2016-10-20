@@ -101,3 +101,17 @@ func TestRegisterNilHandlerDeletes(t *testing.T) {
 		t.Errorf("expected default JSON content-type, got %s", ctype)
 	}
 }
+
+func TestRegister401CallsIt(t *testing.T) {
+	RegisterHandler(401, func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Custom-Handler", "true")
+		w.WriteHeader(401)
+	})
+	defer RegisterHandler(401, nil)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/", nil)
+	Unauthorized(w, req, "domain")
+	if hdr := w.Header().Get("Custom-Handler"); hdr != "true" {
+		t.Errorf("expected custom handler to be called, got %v", hdr)
+	}
+}

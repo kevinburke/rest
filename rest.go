@@ -94,7 +94,7 @@ func defaultServerError(w http.ResponseWriter, r *http.Request, err error) {
 	if err == nil {
 		panic("rest: no error to log")
 	}
-	Logger.Info("Server error", "code", 500, "method", r.Method, "path", r.URL.Path, "err", err)
+	Logger.Error("Server error", "code", 500, "method", r.Method, "path", r.URL.Path, "err", err)
 	w.Header().Set("Content-Type", jsonContentType)
 	w.WriteHeader(http.StatusInternalServerError)
 	if err := json.NewEncoder(w).Encode(serverError); err != nil {
@@ -228,7 +228,7 @@ func NoContent(w http.ResponseWriter) {
 // Unauthorized sets the Domain in the request context
 func Unauthorized(w http.ResponseWriter, r *http.Request, domain string) {
 	handlerMu.RLock()
-	f, ok := handlerMap[http.StatusForbidden]
+	f, ok := handlerMap[http.StatusUnauthorized]
 	handlerMu.RUnlock()
 	if ok {
 		r = ctxSetDomain(r, domain)
