@@ -21,10 +21,9 @@ import (
 func TestPost(t *testing.T) {
 	t.Parallel()
 	var user, pass string
-	var ok bool
 	var requestUrl *url.URL
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		user, pass, ok = r.BasicAuth()
+		user, pass, _ = r.BasicAuth()
 		requestUrl = r.URL
 		assertEquals(t, r.Header.Get("Content-Type"), "application/json; charset=utf-8")
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
