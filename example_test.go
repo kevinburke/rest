@@ -12,13 +12,13 @@ import (
 )
 
 func ExampleRegisterHandler() {
-	rest.RegisterHandler(500, func(w http.ResponseWriter, r *http.Request) {
+	rest.RegisterHandler(500, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := rest.CtxErr(r)
 		fmt.Println("Server error:", err)
 		w.Header().Set("Content-Type", "text/html")
 		w.WriteHeader(500)
 		w.Write([]byte("<html><body>Server Error</body></html>"))
-	})
+	}))
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)

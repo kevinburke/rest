@@ -59,7 +59,7 @@ var handlerMu sync.RWMutex
 // WriteHeader(code) since it may want to set response headers first.
 //
 // To delete a Handler, call RegisterHandler with nil for the second argument.
-func RegisterHandler(code int, f http.HandlerFunc) {
+func RegisterHandler(code int, f http.Handler) {
 	handlerMu.Lock()
 	defer handlerMu.Unlock()
 	switch f {

@@ -10,7 +10,7 @@ import (
 
 func TestCustomBadRequest(t *testing.T) {
 	err := &Error{Title: "bad"}
-	RegisterHandler(400, func(w http.ResponseWriter, r *http.Request) {
+	RegisterHandler(400, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := CtxErr(r)
 		if err == nil {
 			t.Fatal("expected non-nil error, got nil")
@@ -25,7 +25,7 @@ func TestCustomBadRequest(t *testing.T) {
 		w.Header().Set("Custom-Handler", "true")
 		w.WriteHeader(400)
 		w.Write([]byte("hello world"))
-	})
+	}))
 	defer func() {
 		handlerMu.Lock()
 		defer handlerMu.Unlock()

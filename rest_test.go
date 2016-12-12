@@ -103,10 +103,10 @@ func TestRegisterNilHandlerDeletes(t *testing.T) {
 }
 
 func TestRegister401CallsIt(t *testing.T) {
-	RegisterHandler(401, func(w http.ResponseWriter, r *http.Request) {
+	RegisterHandler(401, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Custom-Handler", "true")
 		w.WriteHeader(401)
-	})
+	}))
 	defer RegisterHandler(401, nil)
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/", nil)
