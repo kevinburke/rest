@@ -30,4 +30,10 @@ rest.RegisterHandler(500, func(w http.ResponseWriter, r *http.Request) {
 Set the DEBUG_HTTP_TRAFFIC environment variable to print out all
 request/response traffic being made by the client.
 
+## Donating
+
+Donations free up time to make improvements to the library, and respond to
+bug reports. You can send donations via Paypal's "Send Money" feature to
+kev@inburke.com. Donations are not tax deductible in the USA.
+
 [gddo]: https://godoc.org/github.com/kevinburke/rest
