@@ -12,7 +12,7 @@ func CtxErr(r *http.Request) error {
 
 // ctxSetErr sets err in the request context, and returns the new request.
 func ctxSetErr(r *http.Request, err error) *http.Request {
-	Logger.Info("cannot set error in context", "err", err)
+	// Logger.Info("cannot set error in context", "err", err)
 	return r
 }
 
@@ -25,6 +25,6 @@ func CtxDomain(r *http.Request) string {
 // ctxSetDomain sets a domain in the request context, and returns the new
 // request.
 func ctxSetDomain(r *http.Request, domain string) *http.Request {
-	Logger.Info("cannot set domain in context", "domain", domain)
+	// Logger.Info("cannot set domain in context", "domain", domain)
 	return r
 }
