@@ -3,7 +3,6 @@ package rest
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -66,6 +65,7 @@ func TestCustomErrorParser(t *testing.T) {
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(400)
 	}))
+	defer s.Close()
 	client := NewClient("foo", "bar", s.URL)
 	client.ErrorParser = func(resp *http.Response) error {
 		defer resp.Body.Close()
@@ -112,12 +112,11 @@ func TestSocket(t *testing.T) {
 	ch := make(chan bool, 1)
 	go func() {
 		<-ch
-		fmt.Println("closing listener")
 		listener.Close()
 	}()
 	go server.Serve(listener)
 	c := &Client{Base: "http://localhost"}
-	c.DialSocket(fname)
+	c.DialSocket(fname, nil)
 	req, err := c.NewRequest("GET", "/", nil)
 	assertNotError(t, err, "creating http request")
 	var b struct {
