@@ -21,7 +21,7 @@ var JSON UploadType = "application/json"
 // FormURLEncoded specifies you'd like to upload form-urlencoded data.
 var FormURLEncoded UploadType = "application/x-www-form-urlencoded"
 
-const Version = "0.16"
+const Version = "0.17"
 
 var defaultTimeout = 6500 * time.Millisecond
 
