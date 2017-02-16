@@ -134,7 +134,13 @@ func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request,
 // above, attempt to Unmarshal the response into an Error. Otherwise return
 // a generic http error.
 func (c *Client) Do(r *http.Request, v interface{}) error {
-	res, err := c.Client.Do(r)
+	var res *http.Response
+	var err error
+	if c.Client == nil {
+		res, err = defaultHttpClient.Do(r)
+	} else {
+		res, err = c.Client.Do(r)
+	}
 	if err != nil {
 		return err
 	}

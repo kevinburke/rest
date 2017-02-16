@@ -17,6 +17,17 @@ import (
 	"time"
 )
 
+func TestNilClientNoPanic(t *testing.T) {
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("{}"))
+	}))
+	defer s.Close()
+	client := &Client{Base: s.URL}
+	req, _ := client.NewRequest("GET", "/", nil)
+	err := client.Do(req, nil)
+	assertNotError(t, err, "client.Do")
+}
+
 func TestPost(t *testing.T) {
 	t.Parallel()
 	var user, pass string
