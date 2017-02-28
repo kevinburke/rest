@@ -33,7 +33,8 @@ type Transport struct {
 	RoundTripper http.RoundTripper
 	// Whether to write the HTTP request and response contents to Output.
 	Debug bool
-	// If Debug is true, write the HTTP request and response contents here.
+	// If Debug is true, write the HTTP request and response contents here. If
+	// Output is nil, os.Stderr will be used.
 	Output io.Writer
 }
 
@@ -72,6 +73,9 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 			bits = append(bits, '\n')
 		}
 		w.Write(bits)
+		if t.Output == nil {
+			t.Output = os.Stderr
+		}
 		_, err = io.Copy(t.Output, w)
 		if err != nil {
 			return res, err
