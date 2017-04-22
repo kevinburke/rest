@@ -6,14 +6,12 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
-
-	log "github.com/inconshreveable/log15"
 )
 
 const jsonContentType = "application/json; charset=utf-8"
 
 // Logger logs information about incoming requests.
-var Logger log.Logger = log.New()
+// var Logger log.Logger = log.New()
 
 // Error implements the HTTP Problem spec laid out here:
 // https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03
@@ -94,11 +92,11 @@ func defaultServerError(w http.ResponseWriter, r *http.Request, err error) {
 	if err == nil {
 		panic("rest: no error to log")
 	}
-	Logger.Error("Server error", "code", 500, "method", r.Method, "path", r.URL.Path, "err", err)
+	// Logger.Error("Server error", "code", 500, "method", r.Method, "path", r.URL.Path, "err", err)
 	w.Header().Set("Content-Type", jsonContentType)
 	w.WriteHeader(http.StatusInternalServerError)
 	if err := json.NewEncoder(w).Encode(serverError); err != nil {
-		Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 500, "err", err)
+		// Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 500, "err", err)
 	}
 }
 
@@ -126,7 +124,7 @@ func defaultNotFound(w http.ResponseWriter, r *http.Request) {
 	nf := notFound
 	nf.Instance = r.URL.Path
 	if err := json.NewEncoder(w).Encode(nf); err != nil {
-		Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 404, "err", err)
+		// Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 404, "err", err)
 	}
 }
 
@@ -150,11 +148,11 @@ func defaultBadRequest(w http.ResponseWriter, r *http.Request, err *Error) {
 	if err.StatusCode == 0 {
 		err.StatusCode = http.StatusBadRequest
 	}
-	Logger.Info("Bad request", "code", 400, "method", r.Method, "path", r.URL.Path, "err", err)
+	// Logger.Info("Bad request", "code", 400, "method", r.Method, "path", r.URL.Path, "err", err)
 	w.Header().Set("Content-Type", jsonContentType)
 	w.WriteHeader(http.StatusBadRequest)
 	if err := json.NewEncoder(w).Encode(err); err != nil {
-		Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 400, "err", err)
+		// Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 400, "err", err)
 	}
 }
 
@@ -189,7 +187,7 @@ func defaultNotAllowed(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", jsonContentType)
 	w.WriteHeader(http.StatusMethodNotAllowed)
 	if err := json.NewEncoder(w).Encode(e); err != nil {
-		Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 405, "err", err)
+		// Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 405, "err", err)
 	}
 }
 
@@ -214,7 +212,7 @@ func defaultForbidden(w http.ResponseWriter, r *http.Request, err *Error) {
 	w.Header().Set("Content-Type", jsonContentType)
 	w.WriteHeader(http.StatusForbidden)
 	if err := json.NewEncoder(w).Encode(err); err != nil {
-		Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 403, "err", err)
+		// Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 403, "err", err)
 	}
 }
 
@@ -245,6 +243,6 @@ func defaultUnauthorized(w http.ResponseWriter, r *http.Request, domain string) 
 	w.Header().Set("Content-Type", jsonContentType)
 	w.WriteHeader(http.StatusUnauthorized)
 	if err := json.NewEncoder(w).Encode(err); err != nil {
-		Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 401, "err", err)
+		// Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 401, "err", err)
 	}
 }
