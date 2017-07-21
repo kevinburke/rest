@@ -1,15 +1,15 @@
 BUMP_VERSION := $(shell command -v bump_version)
-STATICCHECK := $(shell command -v staticcheck)
+STATICCHECK := $(shell command -v megacheck)
 
 vet:
 ifndef STATICCHECK
-	go get -u honnef.co/go/tools/cmd/staticcheck
+	go get -u honnef.co/go/tools/cmd/megacheck
 endif
 	go vet ./...
-	staticcheck ./...
+	megacheck ./...
 
 test: vet
-	go test ./...
+	bazel test //...
 
 race-test: vet
 	go test -race ./...

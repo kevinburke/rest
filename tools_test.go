@@ -12,12 +12,7 @@
 package rest
 
 import (
-	"bytes"
-	"encoding/base64"
-	"encoding/json"
 	"fmt"
-	"math/big"
-	"reflect"
 	"runtime"
 	"strings"
 	"testing"
@@ -35,13 +30,6 @@ func caller() string {
 // Assert a boolean
 func assert(t *testing.T, result bool, message string) {
 	if !result {
-		t.Fatalf("%s %s", caller(), message)
-	}
-}
-
-// AssertNotNil checks an object to be non-nil
-func assertNotNil(t *testing.T, obj interface{}, message string) {
-	if obj == nil {
 		t.Fatalf("%s %s", caller(), message)
 	}
 }
@@ -67,82 +55,9 @@ func assertEquals(t *testing.T, one interface{}, two interface{}) {
 	}
 }
 
-// AssertDeepEquals uses the reflect.DeepEqual method to measure one and two
-func assertDeepEquals(t *testing.T, one interface{}, two interface{}) {
-	if !reflect.DeepEqual(one, two) {
-		t.Fatalf("%s [%+v] !(deep)= [%+v]", caller(), one, two)
-	}
-}
-
-// AssertMarshaledEquals marshals one and two to JSON, and then uses
-// the equality operator to measure them
-func assertMarshaledEquals(t *testing.T, one interface{}, two interface{}) {
-	oneJSON, err := json.Marshal(one)
-	assertNotError(t, err, "Could not marshal 1st argument")
-	twoJSON, err := json.Marshal(two)
-	assertNotError(t, err, "Could not marshal 2nd argument")
-
-	if !bytes.Equal(oneJSON, twoJSON) {
-		t.Fatalf("%s [%s] !(json)= [%s]", caller(), oneJSON, twoJSON)
-	}
-}
-
-// AssertNotEquals uses the equality operator to measure that one and two
-// are different
-func assertNotEquals(t *testing.T, one interface{}, two interface{}) {
-	if one == two {
-		t.Fatalf("%s [%v] == [%v]", caller(), one, two)
-	}
-}
-
-// assertByteEquals uses bytes.Equal to measure one and two for equality.
-func assertByteEquals(t *testing.T, one []byte, two []byte) {
-	if !bytes.Equal(one, two) {
-		t.Fatalf("%s Byte [%s] != [%s]",
-			caller(),
-			base64.StdEncoding.EncodeToString(one),
-			base64.StdEncoding.EncodeToString(two))
-	}
-}
-
-// assertIntEquals uses the equality operator to measure one and two.
-func assertIntEquals(t *testing.T, one int, two int) {
-	if one != two {
-		t.Fatalf("%s Int [%d] != [%d]", caller(), one, two)
-	}
-}
-
-// assertBigIntEquals uses the big.Int.cmp() method to measure whether
-// one and two are equal
-func assertBigIntEquals(t *testing.T, one *big.Int, two *big.Int) {
-	if one.Cmp(two) != 0 {
-		t.Fatalf("%s Int [%d] != [%d]", caller(), one, two)
-	}
-}
-
 // assertContains determines whether needle can be found in haystack
 func assertContains(t *testing.T, haystack string, needle string) {
 	if !strings.Contains(haystack, needle) {
 		t.Fatalf("%s String [%s] does not contain [%s]", caller(), haystack, needle)
-	}
-}
-
-// assertNotContains determines if needle is not found in haystack
-func assertNotContains(t *testing.T, haystack string, needle string) {
-	if strings.Contains(haystack, needle) {
-		t.Fatalf("%s String [%s] contains [%s]", caller(), haystack, needle)
-	}
-}
-
-// assertSeverity determines if a string matches the Severity formatting
-func assertSeverity(t *testing.T, data string, severity int) {
-	expected := fmt.Sprintf("\"severity\":%d", severity)
-	assertContains(t, data, expected)
-}
-
-// AssertBetween determines if a is between b and c
-func assertBetween(t *testing.T, a, b, c int64) {
-	if a < b || a > c {
-		t.Fatalf("%d is not between %d and %d", a, b, c)
 	}
 }
