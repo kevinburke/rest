@@ -27,7 +27,8 @@ race-test: vet
 		--test_output=errors --features=race //...
 
 ci:
-	bazel --host_jvm_args=-Dbazel.DigestFunction=SHA1 test \
+	bazel --batch --host_jvm_args=-Dbazel.DigestFunction=SHA1 test \
+		--experimental_repository_cache="$$HOME/.bzrepos"
 		--spawn_strategy=remote \
 		--remote_rest_cache=https://remote.rest.stackmachine.com/cache \
 		--noshow_progress --noshow_loading_progress --test_output=errors \
