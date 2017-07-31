@@ -30,7 +30,7 @@ ci:
 	bazel --host_jvm_args=-Dbazel.DigestFunction=SHA1 test \
 		--spawn_strategy=remote \
 		--remote_rest_cache=https://remote.rest.stackmachine.com/cache \
-		--noshow_progress --noshow_loading_progress --test_output=errors \
+		--test_output=errors \
 		--strategy=Javac=remote \
 		--features=race //...
 
