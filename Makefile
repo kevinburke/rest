@@ -19,7 +19,7 @@ test: vet
 		--test_output=errors //...
 
 race-test: vet
-	bazel test
+	bazel test \
 		--remote_rest_cache=https://remote.rest.stackmachine.com/cache \
 		--spawn_strategy=remote \
 		--strategy=Closure=remote \
