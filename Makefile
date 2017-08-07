@@ -1,14 +1,14 @@
 SHELL = /bin/bash
 
-BUMP_VERSION := $(shell command -v bump_version)
-MEGACHECK := $(shell command -v megacheck)
+BUMP_VERSION := $(GOPATH)/bin/bump_version
+MEGACHECK := $(GOPATH)/bin/megacheck
 
-vet:
-ifndef MEGACHECK
-	go get -u honnef.co/go/tools/cmd/megacheck
-endif
+vet: | $(MEGACHECK)
 	go vet ./...
-	megacheck ./...
+	$(MEGACHECK) ./...
+
+$(MEGACHECK):
+	go get honnef.co/go/tools/cmd/megacheck
 
 test: vet
 	bazel test \
@@ -37,8 +37,8 @@ ci:
 		--features=race //... 2>&1 | ts '[%Y-%m-%d %H:%M:%.S]'
 	bazel analyze-profile --curses=no --noshow_progress profile.out
 
-release: race-test
-ifndef BUMP_VERSION
+$(BUMP_VERSION):
 	go get github.com/Shyp/bump_version
-endif
-	bump_version minor client.go
+
+release: race-test | $(BUMP_VERSION)
+	$(BUMP_VERSION) minor client.go
