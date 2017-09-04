@@ -3,13 +3,6 @@ SHELL = /bin/bash
 BUMP_VERSION := $(GOPATH)/bin/bump_version
 MEGACHECK := $(GOPATH)/bin/megacheck
 
-vet: | $(MEGACHECK)
-	go vet ./...
-	$(MEGACHECK) ./...
-
-$(MEGACHECK):
-	go get honnef.co/go/tools/cmd/megacheck
-
 test: vet
 	bazel test \
 		--remote_rest_cache=https://remote.rest.stackmachine.com/cache \
@@ -17,6 +10,13 @@ test: vet
 		--strategy=Closure=remote \
 		--strategy=Javac=remote \
 		--test_output=errors //...
+
+vet: | $(MEGACHECK)
+	go vet ./...
+	$(MEGACHECK) ./...
+
+$(MEGACHECK):
+	go get honnef.co/go/tools/cmd/megacheck
 
 race-test: vet
 	bazel test \
@@ -34,6 +34,8 @@ ci:
 		--test_output=errors \
 		--strategy=Javac=remote \
 		--profile=profile.out \
+		--noshow_progress \
+		--noshow_loading_progress \
 		--features=race //... 2>&1 | ts '[%Y-%m-%d %H:%M:%.S]'
 	bazel analyze-profile --curses=no --noshow_progress profile.out
 

@@ -53,6 +53,30 @@ func ExampleNewClient() {
 	fmt.Println(r.Ip)
 }
 
+func ExampleClient_NewRequest() {
+	client := rest.NewClient("jobs", "secretpassword", "http://ipinfo.io")
+	req, _ := client.NewRequest("GET", "/json", nil)
+	type resp struct {
+		City string `json:"city"`
+		Ip   string `json:"ip"`
+	}
+	var r resp
+	client.Do(req, &r)
+	fmt.Println(r.Ip)
+}
+
+func ExampleClient_Do() {
+	client := rest.NewClient("jobs", "secretpassword", "http://ipinfo.io")
+	req, _ := client.NewRequest("GET", "/json", nil)
+	type resp struct {
+		City string `json:"city"`
+		Ip   string `json:"ip"`
+	}
+	var r resp
+	client.Do(req, &r)
+	fmt.Println(r.Ip)
+}
+
 func ExampleTransport() {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello World"))
