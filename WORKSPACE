@@ -1,9 +1,9 @@
-git_repository(
+http_archive(
     name = "io_bazel_rules_go",
-    remote = "https://github.com/bazelbuild/rules_go.git",
-    tag = "0.5.4",
+    url = "https://github.com/bazelbuild/rules_go/releases/download/0.6.0/rules_go-0.6.0.tar.gz",
+    sha256 = "ba6feabc94a5d205013e70792accb6cce989169476668fbaf98ea9b342e13b59",
 )
-load("@io_bazel_rules_go//go:def.bzl", "go_prefix", "go_repositories", "go_repository")
+load("@io_bazel_rules_go//go:def.bzl", "go_rules_dependencies", "go_register_toolchains", "go_repository")
 
 go_repository(
     name = "com_github_google_go_cmp",
@@ -45,4 +45,5 @@ go_repository(
     type = "zip",
 )
 
-go_repositories()
+go_rules_dependencies()
+go_register_toolchains()

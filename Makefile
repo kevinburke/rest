@@ -1,14 +1,14 @@
-SHELL = /bin/bash
+SHELL = /bin/bash -o pipefail
+
+BAZEL_VERSION := 0.6.1
+BAZEL_DEB := bazel_$(BAZEL_VERSION)_amd64.deb
 
 BUMP_VERSION := $(GOPATH)/bin/bump_version
 MEGACHECK := $(GOPATH)/bin/megacheck
 
 test: vet
 	bazel test \
-		--remote_rest_cache=https://remote.rest.stackmachine.com/cache \
-		--spawn_strategy=remote \
-		--strategy=Closure=remote \
-		--strategy=Javac=remote \
+		--experimental_repository_cache="$$HOME/.bzrepos" \
 		--test_output=errors //...
 
 vet: | $(MEGACHECK)
@@ -18,9 +18,14 @@ vet: | $(MEGACHECK)
 $(MEGACHECK):
 	go get honnef.co/go/tools/cmd/megacheck
 
+install-travis:
+	wget "https://storage.googleapis.com/bazel-apt/pool/jdk1.8/b/bazel/$(BAZEL_DEB)"
+	sudo dpkg --force-all -i $(BAZEL_DEB)
+	sudo apt-get install moreutils -y
+
 race-test: vet
 	bazel test \
-		--remote_rest_cache=https://remote.rest.stackmachine.com/cache \
+		--experimental_repository_cache="$$HOME/.bzrepos" \
 		--spawn_strategy=remote \
 		--strategy=Closure=remote \
 		--strategy=Javac=remote \
@@ -30,7 +35,6 @@ ci:
 	bazel --batch --host_jvm_args=-Dbazel.DigestFunction=SHA1 test \
 		--experimental_repository_cache="$$HOME/.bzrepos" \
 		--spawn_strategy=remote \
-		--remote_rest_cache=https://remote.rest.stackmachine.com/cache \
 		--test_output=errors \
 		--strategy=Javac=remote \
 		--profile=profile.out \
