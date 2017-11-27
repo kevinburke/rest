@@ -172,10 +172,10 @@ func (c *Client) Do(r *http.Request, v interface{}) error {
 // it cannot do so, return an error containing the entire response body.
 func DefaultErrorParser(resp *http.Response) error {
 	resBody, err := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
 	if err != nil {
 		return err
 	}
+	defer resp.Body.Close()
 	rerr := new(Error)
 	err = json.Unmarshal(resBody, rerr)
 	if err != nil {
