@@ -23,8 +23,6 @@ var FormURLEncoded UploadType = "application/x-www-form-urlencoded"
 
 const Version = "1.1"
 
-var defaultTimeout = 6500 * time.Millisecond
-
 var ua string
 
 func init() {
@@ -53,8 +51,7 @@ type Client struct {
 }
 
 // NewClient returns a new Client with the given user and password. Base is the
-// scheme+domain to hit for all requests. By default, the request timeout is
-// set to 6.5 seconds.
+// scheme+domain to hit for all requests.
 func NewClient(user, pass, base string) *Client {
 	return &Client{
 		ID:          user,
