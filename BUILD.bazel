@@ -1,6 +1,6 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_prefix", "go_test")
 
-go_prefix("github.com/kevinburke/rest")
+go_prefix("github.com/Shyp/rest")
 
 go_library(
     name = "go_default_library",

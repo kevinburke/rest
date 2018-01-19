@@ -44,10 +44,4 @@ client := http.Client{
 }
 ```
 
-## Donating
-
-Donations free up time to make improvements to the library, and respond to
-bug reports. You can send donations via Paypal's "Send Money" feature to
-kev@inburke.com. Donations are not tax deductible in the USA.
-
-[gddo]: https://godoc.org/github.com/kevinburke/rest
+[gddo]: https://godoc.org/github.com/Shyp/rest

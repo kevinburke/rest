@@ -29,7 +29,7 @@ var ua string
 
 func init() {
 	gv := strings.Replace(runtime.Version(), "go", "", 1)
-	ua = fmt.Sprintf("rest-client/%s (https://github.com/kevinburke/rest) go/%s (%s/%s)",
+	ua = fmt.Sprintf("rest-client/%s (https://github.com/Shyp/rest) go/%s (%s/%s)",
 		Version, gv, runtime.GOOS, runtime.GOARCH)
 }
 
