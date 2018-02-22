@@ -16,7 +16,7 @@ const jsonContentType = "application/json; charset=utf-8"
 var Logger log.Logger = log.New()
 
 // Error implements the HTTP Problem spec laid out here:
-// https://tools.ietf.org/html/draft-ietf-appsawg-http-problem-03
+// https://tools.ietf.org/html/rfc7807
 type Error struct {
 	// The main error message. Should be short enough to fit in a phone's
 	// alert box. Do not end this message with a period.
@@ -31,9 +31,11 @@ type Error struct {
 	// Path to the object that's in error.
 	Instance string `json:"instance,omitempty"`
 
-	// Link to more information (Zendesk, API docs, etc)
-	Type       string `json:"type,omitempty"`
-	StatusCode int    `json:"status_code,omitempty"`
+	// Link to more information about the error (Zendesk, API docs, etc).
+	Type string `json:"type,omitempty"`
+
+	// HTTP status code of the error.
+	Status int `json:"status,omitempty"`
 }
 
 func (e *Error) Error() string {
@@ -85,9 +87,9 @@ func ServerError(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 var serverError = Error{
-	StatusCode: http.StatusInternalServerError,
-	ID:         "server_error",
-	Title:      "Unexpected server error. Please try again",
+	Status: http.StatusInternalServerError,
+	ID:     "server_error",
+	Title:  "Unexpected server error. Please try again",
 }
 
 func defaultServerError(w http.ResponseWriter, r *http.Request, err error) {
@@ -103,9 +105,9 @@ func defaultServerError(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 var notFound = Error{
-	Title:      "Resource not found",
-	ID:         "not_found",
-	StatusCode: http.StatusNotFound,
+	Title:  "Resource not found",
+	ID:     "not_found",
+	Status: http.StatusNotFound,
 }
 
 // NotFound returns a 404 Not Found error to the client.
@@ -175,8 +177,8 @@ func defaultBadRequest(w http.ResponseWriter, r *http.Request, err *Error) {
 	if err == nil {
 		panic("rest: no error to write")
 	}
-	if err.StatusCode == 0 {
-		err.StatusCode = http.StatusBadRequest
+	if err.Status == 0 {
+		err.Status = http.StatusBadRequest
 	}
 	Logger.Info("Bad request", "code", 400, "method", r.Method, "path", r.URL.Path, "err", err)
 	w.Header().Set("Content-Type", jsonContentType)
@@ -187,15 +189,15 @@ func defaultBadRequest(w http.ResponseWriter, r *http.Request, err *Error) {
 }
 
 var notAllowed = Error{
-	Title:      "Method not allowed",
-	ID:         "method_not_allowed",
-	StatusCode: http.StatusMethodNotAllowed,
+	Title:  "Method not allowed",
+	ID:     "method_not_allowed",
+	Status: http.StatusMethodNotAllowed,
 }
 
 var authenticate = Error{
-	Title:      "Unauthorized. Please include your API credentials",
-	ID:         "unauthorized",
-	StatusCode: http.StatusUnauthorized,
+	Title:  "Unauthorized. Please include your API credentials",
+	ID:     "unauthorized",
+	Status: http.StatusUnauthorized,
 }
 
 // NotAllowed returns a generic HTTP 405 Not Allowed status and response body
