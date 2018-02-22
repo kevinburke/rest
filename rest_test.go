@@ -30,8 +30,8 @@ func TestServerError(t *testing.T) {
 	if e.ID != serverError.ID {
 		t.Errorf("expected ID to be %s, got %s", serverError.ID, e.ID)
 	}
-	if e.StatusCode != 500 {
-		t.Errorf("expected code to be 500, got %d", e.StatusCode)
+	if e.Status != 500 {
+		t.Errorf("expected code to be 500, got %d", e.Status)
 	}
 }
 
@@ -57,8 +57,8 @@ func TestBadRequest(t *testing.T) {
 	if e.Title != "Please provide a widget" {
 		t.Errorf("expected Title to be %s, got %s", "Please provide a widget", e.Title)
 	}
-	if e.StatusCode != 400 {
-		t.Errorf("expected code to be 400, got %d", e.StatusCode)
+	if e.Status != 400 {
+		t.Errorf("expected code to be 400, got %d", e.Status)
 	}
 	if e.ID != "missing_widget" {
 		t.Errorf("expected ID to be %s, got %s", "missing_widget", e.ID)

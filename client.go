@@ -181,7 +181,7 @@ func DefaultErrorParser(resp *http.Response) error {
 	if rerr.Title == "" {
 		return fmt.Errorf("invalid response body: %s", string(resBody))
 	} else {
-		rerr.StatusCode = resp.StatusCode
+		rerr.Status = resp.StatusCode
 		return rerr
 	}
 }

@@ -1,6 +1,6 @@
 SHELL = /bin/bash -o pipefail
 
-BAZEL_VERSION := 0.6.1
+BAZEL_VERSION := 0.10.0
 BAZEL_DEB := bazel_$(BAZEL_VERSION)_amd64.deb
 
 BUMP_VERSION := $(GOPATH)/bin/bump_version
