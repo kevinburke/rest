@@ -8,10 +8,34 @@ import (
 	"testing"
 )
 
+func TestGone(t *testing.T) {
+	t.Parallel()
+	w := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "/", nil)
+	Gone(w, req)
+	if w.Code != 410 {
+		t.Errorf("expected code to be 410, got %d", w.Code)
+	}
+	var e Error
+	err := json.NewDecoder(w.Body).Decode(&e)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if e.Title != gone.Title {
+		t.Errorf("expected Title to be %s, got %s", serverError.Title, e.Title)
+	}
+	if e.ID != gone.ID {
+		t.Errorf("expected ID to be %s, got %s", serverError.ID, e.ID)
+	}
+	if e.Status != 410 {
+		t.Errorf("expected code to be 410, got %d", e.Status)
+	}
+}
+
 func TestServerError(t *testing.T) {
 	t.Parallel()
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
+	req := httptest.NewRequest("GET", "/", nil)
 	ServerError(w, req, errors.New("foo bar"))
 	if w.Code != 500 {
 		t.Errorf("expected code to be 500, got %d", w.Code)
@@ -38,7 +62,7 @@ func TestServerError(t *testing.T) {
 func TestBadRequest(t *testing.T) {
 	t.Parallel()
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
+	req := httptest.NewRequest("GET", "/", nil)
 	BadRequest(w, req, &Error{
 		Title: "Please provide a widget",
 		ID:    "missing_widget",
@@ -81,7 +105,7 @@ func TestNoContent(t *testing.T) {
 func TestUnauthorized(t *testing.T) {
 	t.Parallel()
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
+	req := httptest.NewRequest("GET", "/", nil)
 	Unauthorized(w, req, "foo")
 	if w.Code != 401 {
 		t.Errorf("expected Code to be 401, got %d", w.Code)
@@ -95,7 +119,7 @@ func TestUnauthorized(t *testing.T) {
 func TestRegisterNilHandlerDeletes(t *testing.T) {
 	RegisterHandler(500, nil)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
+	req := httptest.NewRequest("GET", "/", nil)
 	ServerError(w, req, errors.New("bad"))
 	if ctype := w.Header().Get("Content-Type"); ctype != jsonContentType {
 		t.Errorf("expected default JSON content-type, got %s", ctype)
@@ -109,7 +133,7 @@ func TestRegister401CallsIt(t *testing.T) {
 	}))
 	defer RegisterHandler(401, nil)
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
+	req := httptest.NewRequest("GET", "/", nil)
 	Unauthorized(w, req, "domain")
 	if hdr := w.Header().Get("Custom-Handler"); hdr != "true" {
 		t.Errorf("expected custom handler to be called, got %v", hdr)
