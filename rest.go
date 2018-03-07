@@ -143,6 +143,34 @@ func BadRequest(w http.ResponseWriter, r *http.Request, err *Error) {
 	}
 }
 
+var gone = Error{
+	Title:  "Resource is gone",
+	ID:     "gone",
+	Status: http.StatusGone,
+}
+
+// Gone responds to the request with a 410 Gone error message
+func Gone(w http.ResponseWriter, r *http.Request) {
+	handlerMu.RLock()
+	f, ok := handlerMap[http.StatusGone]
+	handlerMu.RUnlock()
+	if ok {
+		f.ServeHTTP(w, r)
+	} else {
+		defaultGone(w, r)
+	}
+}
+
+func defaultGone(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", jsonContentType)
+	w.WriteHeader(http.StatusGone)
+	g := gone
+	g.Instance = r.URL.Path
+	if err := json.NewEncoder(w).Encode(g); err != nil {
+		Logger.Info("Couldn't write error", "path", r.URL.Path, "code", 404, "err", err)
+	}
+}
+
 func defaultBadRequest(w http.ResponseWriter, r *http.Request, err *Error) {
 	if err == nil {
 		panic("rest: no error to write")
