@@ -4,14 +4,12 @@ go_import_path: github.com/kevinburke/rest
 os: linux
 dist: trusty
 
-sudo: required
-
 before_script:
-  - make install-travis
+  - make deps
 
 script:
-  - make ci
+  - make race-test
 
 cache:
   directories:
-    - $HOME/.bzrepos
+    - $GOPATH/pkg
