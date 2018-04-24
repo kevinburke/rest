@@ -1,3 +1,7 @@
+# 2.1
+
+Remove Bazel for testing purposes.
+
 # 2.0
 
 - rest.Error.StatusCode has been renamed to rest.Error.Status to match the
