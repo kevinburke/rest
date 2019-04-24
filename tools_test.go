@@ -29,6 +29,7 @@ func caller() string {
 
 // Assert a boolean
 func assert(t *testing.T, result bool, message string) {
+	t.Helper()
 	if !result {
 		t.Fatalf("%s %s", caller(), message)
 	}
@@ -36,6 +37,7 @@ func assert(t *testing.T, result bool, message string) {
 
 // AssertNotError checks that err is nil
 func assertNotError(t *testing.T, err error, message string) {
+	t.Helper()
 	if err != nil {
 		t.Fatalf("%s %s: %s", caller(), message, err)
 	}
@@ -43,6 +45,7 @@ func assertNotError(t *testing.T, err error, message string) {
 
 // AssertError checks that err is non-nil
 func assertError(t *testing.T, err error, message string) {
+	t.Helper()
 	if err == nil {
 		t.Fatalf("%s %s: expected error but received none", caller(), message)
 	}
@@ -50,6 +53,7 @@ func assertError(t *testing.T, err error, message string) {
 
 // AssertEquals uses the equality operator (==) to measure one and two
 func assertEquals(t *testing.T, one interface{}, two interface{}) {
+	t.Helper()
 	if one != two {
 		t.Fatalf("%s [%v] != [%v]", caller(), one, two)
 	}
@@ -57,6 +61,7 @@ func assertEquals(t *testing.T, one interface{}, two interface{}) {
 
 // assertContains determines whether needle can be found in haystack
 func assertContains(t *testing.T, haystack string, needle string) {
+	t.Helper()
 	if !strings.Contains(haystack, needle) {
 		t.Fatalf("%s String [%s] does not contain [%s]", caller(), haystack, needle)
 	}

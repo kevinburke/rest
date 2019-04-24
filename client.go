@@ -48,6 +48,8 @@ type Client struct {
 	// ErrorParser is invoked when the client gets a 400-or-higher status code
 	// from the server. Defaults to rest.DefaultErrorParser.
 	ErrorParser func(*http.Response) error
+
+	useBearerAuth bool
 }
 
 // NewClient returns a new Client with the given user and password. Base is the
@@ -60,6 +62,19 @@ func NewClient(user, pass, base string) *Client {
 		Base:        base,
 		UploadType:  JSON,
 		ErrorParser: DefaultErrorParser,
+	}
+}
+
+// NewBearerClient returns a new Client configured to use Bearer authentication.
+func NewBearerClient(token, base string) *Client {
+	return &Client{
+		ID:            "",
+		Token:         token,
+		Client:        defaultHttpClient,
+		Base:          base,
+		UploadType:    JSON,
+		ErrorParser:   DefaultErrorParser,
+		useBearerAuth: true,
 	}
 }
 
@@ -115,7 +130,10 @@ func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request,
 	if err != nil {
 		return nil, err
 	}
-	if c.ID != "" || c.Token != "" {
+	switch {
+	case c.useBearerAuth && c.Token != "":
+		req.Header.Add("Authorization", "Bearer "+c.Token)
+	case !c.useBearerAuth && (c.ID != "" || c.Token != ""):
 		req.SetBasicAuth(c.ID, c.Token)
 	}
 	req.Header.Add("User-Agent", ua)

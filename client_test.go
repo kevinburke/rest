@@ -28,6 +28,18 @@ func TestNilClientNoPanic(t *testing.T) {
 	assertNotError(t, err, "client.Do")
 }
 
+func TestBearerClient(t *testing.T) {
+	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		assertEquals(t, r.Header.Get("Authorization"), "Bearer foo")
+		w.Write([]byte("{}"))
+	}))
+	defer s.Close()
+	client := NewBearerClient("foo", s.URL)
+	req, _ := client.NewRequest("GET", "/", nil)
+	err := client.Do(req, nil)
+	assertNotError(t, err, "client.Do")
+}
+
 func TestPost(t *testing.T) {
 	t.Parallel()
 	var user, pass string
