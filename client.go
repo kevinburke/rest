@@ -110,6 +110,8 @@ func (c *Client) DialSocket(socket string, transport *http.Transport) {
 		}
 	}
 	switch tp := c.Client.Transport.(type) {
+	// TODO both of these cases clobbber the existing transport which isn't
+	// ideal.
 	case nil, *Transport:
 		c.Client.Transport = &Transport{
 			RoundTripper: transport,
@@ -117,7 +119,7 @@ func (c *Client) DialSocket(socket string, transport *http.Transport) {
 			Output:       DefaultTransport.Output,
 		}
 	case *http.Transport:
-		tp = transport
+		c.Client.Transport = transport
 	default:
 		panic(fmt.Sprintf("could not set DialSocket on unknown transport: %#v", tp))
 	}
