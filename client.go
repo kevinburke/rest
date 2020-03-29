@@ -128,6 +128,9 @@ func (c *Client) DialSocket(socket string, transport *http.Transport) {
 // NewRequest creates a new Request and sets basic auth based on the client's
 // authentication information.
 func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request, error) {
+	// see for example https://github.com/meterup/github-release/issues/1 - if
+	// the path contains the full URL including the base, strip it out
+	path = strings.TrimPrefix(path, c.Base)
 	req, err := http.NewRequest(method, c.Base+path, body)
 	if err != nil {
 		return nil, err
