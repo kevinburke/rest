@@ -1,4 +1,4 @@
-package rest
+package restclient
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ func TestDebugTransport(t *testing.T) {
 		w.Write([]byte(resp))
 	}))
 	defer s.Close()
-	c := NewClient("foo", "bar", s.URL)
+	c := New("foo", "bar", s.URL)
 	b := new(bytes.Buffer)
 	c.Client.Transport = &Transport{
 		Debug:  true,
@@ -37,7 +37,7 @@ func TestNoDebugTransport(t *testing.T) {
 		w.Write([]byte(resp))
 	}))
 	defer s.Close()
-	c := NewClient("foo", "bar", s.URL)
+	c := New("foo", "bar", s.URL)
 	b := new(bytes.Buffer)
 	c.Client.Transport = &Transport{
 		Debug:  false,

@@ -1,34 +1,15 @@
-// +build go1.7
-
-package rest_test
+package restclient_test
 
 import (
 	"bufio"
 	"bytes"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 
-	"github.com/kevinburke/rest"
 	"github.com/kevinburke/rest/restclient"
 )
-
-func ExampleRegisterHandler() {
-	rest.RegisterHandler(500, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		err := rest.CtxErr(r)
-		fmt.Println("Server error:", err)
-		w.Header().Set("Content-Type", "text/html")
-		w.WriteHeader(500)
-		w.Write([]byte("<html><body>Server Error</body></html>"))
-	}))
-
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/", nil)
-	rest.ServerError(w, req, errors.New("Something bad happened"))
-	// Output: Server error: Something bad happened
-}
 
 func ExampleClient() {
 	client := restclient.New("jobs", "secretpassword", "http://ipinfo.io")
@@ -42,8 +23,8 @@ func ExampleClient() {
 	fmt.Println(r.Ip)
 }
 
-func ExampleNewClient() {
-	client := rest.NewClient("jobs", "secretpassword", "http://ipinfo.io")
+func ExampleNew() {
+	client := restclient.New("jobs", "secretpassword", "http://ipinfo.io")
 	req, _ := client.NewRequest("GET", "/json", nil)
 	type resp struct {
 		City string `json:"city"`
@@ -55,7 +36,7 @@ func ExampleNewClient() {
 }
 
 func ExampleClient_NewRequest() {
-	client := rest.NewClient("jobs", "secretpassword", "http://ipinfo.io")
+	client := restclient.New("jobs", "secretpassword", "http://ipinfo.io")
 	req, _ := client.NewRequest("GET", "/json", nil)
 	type resp struct {
 		City string `json:"city"`
@@ -67,7 +48,7 @@ func ExampleClient_NewRequest() {
 }
 
 func ExampleClient_Do() {
-	client := rest.NewClient("jobs", "secretpassword", "http://ipinfo.io")
+	client := restclient.New("jobs", "secretpassword", "http://ipinfo.io")
 	req, _ := client.NewRequest("GET", "/json", nil)
 	type resp struct {
 		City string `json:"city"`
@@ -85,7 +66,7 @@ func ExampleTransport() {
 	defer server.Close()
 	b := new(bytes.Buffer)
 	client := http.Client{
-		Transport: &rest.Transport{Debug: true, Output: b},
+		Transport: &restclient.Transport{Debug: true, Output: b},
 	}
 	req, _ := http.NewRequest("GET", server.URL+"/bar", nil)
 	client.Do(req)

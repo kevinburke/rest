@@ -9,7 +9,7 @@
 // we want to modify this file we have to release it publicly, otherwise we're
 // fine.
 
-package rest
+package restclient
 
 import (
 	"fmt"

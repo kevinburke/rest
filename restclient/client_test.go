@@ -1,4 +1,4 @@
-package rest
+package restclient
 
 import (
 	"encoding/json"
@@ -15,6 +15,8 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/kevinburke/rest/resterror"
 )
 
 func TestNilClientNoPanic(t *testing.T) {
@@ -53,7 +55,7 @@ func TestPost(t *testing.T) {
 		w.Write([]byte("{}"))
 	}))
 	defer s.Close()
-	client := NewClient("foo", "bar", s.URL)
+	client := New("foo", "bar", s.URL)
 	req, err := client.NewRequest("POST", "/", nil)
 	assertNotError(t, err, "")
 	err = client.Do(req, &struct{}{})
@@ -68,17 +70,17 @@ func TestPostError(t *testing.T) {
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(&Error{
+		json.NewEncoder(w).Encode(&resterror.Error{
 			Title: "bad request",
 			ID:    "something_bad",
 		})
 	}))
 	defer s.Close()
-	client := NewClient("foo", "bar", s.URL)
+	client := New("foo", "bar", s.URL)
 	req, _ := client.NewRequest("POST", "/", nil)
 	err := client.Do(req, nil)
 	assertError(t, err, "Making the request")
-	rerr, ok := err.(*Error)
+	rerr, ok := err.(*resterror.Error)
 	assert(t, ok, "converting err to rest.Error")
 	assertEquals(t, rerr.Title, "bad request")
 	assertEquals(t, rerr.ID, "something_bad")
@@ -89,7 +91,7 @@ func TestCustomErrorParser(t *testing.T) {
 		w.WriteHeader(400)
 	}))
 	defer s.Close()
-	client := NewClient("foo", "bar", s.URL)
+	client := New("foo", "bar", s.URL)
 	client.ErrorParser = func(resp *http.Response) error {
 		defer resp.Body.Close()
 		io.Copy(ioutil.Discard, resp.Body)
