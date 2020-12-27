@@ -6,6 +6,9 @@ STATICCHECK := $(GOPATH)/bin/staticcheck
 deps:
 	go get -u ./...
 
+test-deps:
+	go get -t -v ./...
+
 test: lint
 	go test ./...
 
@@ -24,3 +27,5 @@ $(BUMP_VERSION):
 
 release: race-test | $(BUMP_VERSION)
 	$(BUMP_VERSION) minor client.go
+
+ci: test-deps lint race-test
