@@ -14,15 +14,18 @@ import (
 
 type (
 	// Backwards compatibility
-	Error     = resterror.Error
-	Client    = restclient.Client
-	Transport = restclient.Transport
+	Error      = resterror.Error
+	Client     = restclient.Client
+	Transport  = restclient.Transport
+	UploadType = restclient.UploadType
 )
 
 var (
 	NewClient        = restclient.New
 	NewBearerClient  = restclient.NewBearerClient
 	DefaultTransport = restclient.DefaultTransport
+	JSON             = restclient.JSON
+	FormURLEncoded   = restclient.FormURLEncoded
 )
 
 const jsonContentType = "application/json; charset=utf-8"
