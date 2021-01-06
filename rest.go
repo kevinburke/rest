@@ -21,6 +21,7 @@ type (
 
 var (
 	NewClient        = restclient.New
+	NewBearerClient  = restclient.NewBearerClient
 	DefaultTransport = restclient.DefaultTransport
 )
 
