@@ -127,9 +127,7 @@ func (c *Client) DialSocket(socket string, transport *http.Transport) {
 	}
 }
 
-// NewRequest creates a new Request and sets basic auth based on the client's
-// authentication information.
-func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request, error) {
+func (c *Client) NewRequestWithContext(ctx context.Context, method, path string, body io.Reader) (*http.Request, error) {
 	// see for example https://github.com/meterup/github-release/issues/1 - if
 	// the path contains the full URL including the base, strip it out
 	path = strings.TrimPrefix(path, c.Base)
@@ -154,6 +152,12 @@ func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request,
 		req.Header.Add("Content-Type", fmt.Sprintf("%s; charset=utf-8", uploadType))
 	}
 	return req, nil
+}
+
+// NewRequest creates a new Request and sets basic auth based on the client's
+// authentication information.
+func (c *Client) NewRequest(method, path string, body io.Reader) (*http.Request, error) {
+	return c.NewRequestWithContext(context.Background(), method, path, body)
 }
 
 // Do performs the HTTP request. If the HTTP response is in the 2xx range,
