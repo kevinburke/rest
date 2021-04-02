@@ -4,12 +4,12 @@ jobs:
   test:
     strategy:
       matrix:
-        go-version: [1.15.x]
+        go-version: [1.16.x]
         platform: [ubuntu-latest]
     runs-on: ${{ matrix.platform }}
     steps:
     - name: Install Go
-      uses: actions/setup-go@v2
+      uses: WillAbides/setup-go-faster@main
       with:
         go-version: ${{ matrix.go-version }}
     - uses: actions/checkout@v2
@@ -19,5 +19,5 @@ jobs:
     - run: echo "GOPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
     - run: echo "PATH=$GITHUB_WORKSPACE/bin:$PATH" >> $GITHUB_ENV
     - name: Run tests
-      run: make ci
+      run: make race-test
       working-directory: './src/github.com/kevinburke/rest'
