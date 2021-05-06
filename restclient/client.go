@@ -128,6 +128,9 @@ func (c *Client) DialSocket(socket string, transport *http.Transport) {
 }
 
 func (c *Client) NewRequestWithContext(ctx context.Context, method, path string, body io.Reader) (*http.Request, error) {
+	if c == nil {
+		panic("cannot call NewRequestWithContext on nil *Client")
+	}
 	// see for example https://github.com/meterup/github-release/issues/1 - if
 	// the path contains the full URL including the base, strip it out
 	path = strings.TrimPrefix(path, c.Base)
