@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net"
@@ -94,7 +93,7 @@ func TestCustomErrorParser(t *testing.T) {
 	client := New("foo", "bar", s.URL)
 	client.ErrorParser = func(resp *http.Response) error {
 		defer resp.Body.Close()
-		io.Copy(ioutil.Discard, resp.Body)
+		io.Copy(io.Discard, resp.Body)
 		return errors.New("custom error")
 	}
 	req, _ := client.NewRequest("GET", "/", nil)

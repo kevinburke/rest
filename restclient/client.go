@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"runtime"
@@ -186,7 +185,7 @@ func (c *Client) Do(r *http.Request, v interface{}) error {
 		return DefaultErrorParser(res)
 	}
 
-	resBody, err := ioutil.ReadAll(res.Body)
+	resBody, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
@@ -200,7 +199,7 @@ func (c *Client) Do(r *http.Request, v interface{}) error {
 // DefaultErrorParser attempts to parse the response body as a rest.Error. If
 // it cannot do so, return an error containing the entire response body.
 func DefaultErrorParser(resp *http.Response) error {
-	resBody, err := ioutil.ReadAll(resp.Body)
+	resBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
