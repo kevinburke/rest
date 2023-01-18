@@ -1,3 +1,4 @@
+//go:build go1.7
 // +build go1.7
 
 package rest_test
@@ -43,7 +44,9 @@ func ExampleClient() {
 }
 
 func ExampleNewClient() {
+	// Deprecated: use restclient.New instead.
 	client := rest.NewClient("jobs", "secretpassword", "http://ipinfo.io")
+	// Use restclient.Client.NewRequestWithContext instead.
 	req, _ := client.NewRequest("GET", "/json", nil)
 	type resp struct {
 		City string `json:"city"`

@@ -152,7 +152,7 @@ func (c *Client) NewRequestWithContext(ctx context.Context, method, path string,
 		if uploadType == "" {
 			uploadType = JSON
 		}
-		req.Header.Add("Content-Type", fmt.Sprintf("%s; charset=utf-8", uploadType))
+		req.Header.Add("Content-Type", string(uploadType)+"; charset=utf-8")
 	}
 	return req, nil
 }
