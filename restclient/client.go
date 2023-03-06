@@ -133,7 +133,7 @@ func (c *Client) NewRequestWithContext(ctx context.Context, method, path string,
 	// see for example https://github.com/meterup/github-release/issues/1 - if
 	// the path contains the full URL including the base, strip it out
 	path = strings.TrimPrefix(path, c.Base)
-	req, err := http.NewRequest(method, c.Base+path, body)
+	req, err := http.NewRequestWithContext(ctx, method, c.Base+path, body)
 	if err != nil {
 		return nil, err
 	}
