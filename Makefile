@@ -17,13 +17,13 @@ lint: | $(STATICCHECK)
 	$(STATICCHECK) ./...
 
 $(STATICCHECK):
-	go get honnef.co/go/tools/cmd/staticcheck
+	go install honnef.co/go/tools/cmd/staticcheck@latest
 
 race-test: lint
 	go test -race ./...
 
 $(BUMP_VERSION):
-	go get github.com/kevinburke/bump_version
+	go install github.com/kevinburke/bump_version
 
 release: race-test | $(BUMP_VERSION)
 	$(BUMP_VERSION) minor restclient/client.go
