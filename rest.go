@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"sync"
 
-	log "github.com/inconshreveable/log15"
 	"github.com/kevinburke/rest/restclient"
 	"github.com/kevinburke/rest/resterror"
 )
@@ -31,9 +30,6 @@ var (
 )
 
 const jsonContentType = "application/json; charset=utf-8"
-
-// Logger logs information about incoming requests.
-var Logger log.Logger = log.New()
 
 var (
 	handlerMap = make(map[int]http.Handler)
