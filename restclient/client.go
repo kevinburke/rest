@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"runtime"
 	"strings"
+	"sync/atomic"
 	"time"
 
 	"github.com/kevinburke/rest/resterror"
@@ -36,8 +37,6 @@ func init() {
 type Client struct {
 	// Username for use in HTTP Basic Auth
 	ID string
-	// Password for use in HTTP Basic Auth
-	Token string
 	// HTTP Client to use for making requests
 	Client *http.Client
 	// The base URL for all requests to this API, for example,
@@ -51,32 +50,48 @@ type Client struct {
 	ErrorParser func(*http.Response) error
 
 	useBearerAuth bool
+
+	// Password for use in HTTP Basic Auth, or single token in Bearer auth
+	token atomic.Value
+}
+
+func (c *Client) Token() string {
+	l := c.token.Load()
+	s, _ := l.(string)
+	return s
 }
 
 // New returns a new Client with HTTP Basic Auth with the given user and
 // password. Base is the scheme+domain to hit for all requests.
 func New(user, pass, base string) *Client {
-	return &Client{
+
+	c := &Client{
 		ID:          user,
-		Token:       pass,
 		Client:      defaultHttpClient,
 		Base:        base,
 		UploadType:  JSON,
 		ErrorParser: DefaultErrorParser,
 	}
+	c.token.Store(pass)
+	return c
 }
 
 // NewBearerClient returns a new Client configured to use Bearer authentication.
 func NewBearerClient(token, base string) *Client {
-	return &Client{
+	c := &Client{
 		ID:            "",
-		Token:         token,
 		Client:        defaultHttpClient,
 		Base:          base,
 		UploadType:    JSON,
 		ErrorParser:   DefaultErrorParser,
 		useBearerAuth: true,
 	}
+	c.token.Store(token)
+	return c
+}
+
+func (c *Client) UpdateToken(newToken string) {
+	c.token.Store(newToken)
 }
 
 var defaultDialer = &net.Dialer{
@@ -137,11 +152,12 @@ func (c *Client) NewRequestWithContext(ctx context.Context, method, path string,
 	if err != nil {
 		return nil, err
 	}
+	token := c.Token()
 	switch {
-	case c.useBearerAuth && c.Token != "":
-		req.Header.Add("Authorization", "Bearer "+c.Token)
-	case !c.useBearerAuth && (c.ID != "" || c.Token != ""):
-		req.SetBasicAuth(c.ID, c.Token)
+	case c.useBearerAuth && token != "":
+		req.Header.Add("Authorization", "Bearer "+token)
+	case !c.useBearerAuth && (c.ID != "" || token != ""):
+		req.SetBasicAuth(c.ID, token)
 	}
 	req.Header.Add("User-Agent", ua)
 	req.Header.Add("Accept", "application/json")

@@ -1,3 +1,19 @@
+## 2.8
+
+Replace Client.Token with Client.Token(). Add new SetToken() method to allow
+updating the token.
+
+Replace handlers.Logger with the new `log/slog` package in the standard library.
+Log lines are not printed in color as a result.
+
+## 2.6
+
+Add Client.NewRequestWithContext to mirror http.NewRequestWithContext.
+
+## 2.5
+
+Add back DefaultErrorParser, NewBearerClient (these got missed in the move).
+
 ## 2.3
 
 Move rest.Client to new restclient package, and rest.Error to a new resterror
