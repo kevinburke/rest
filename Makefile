@@ -26,6 +26,6 @@ $(BUMP_VERSION):
 	go install github.com/kevinburke/bump_version
 
 release: race-test | $(BUMP_VERSION)
-	$(BUMP_VERSION) minor restclient/client.go
+	$(BUMP_VERSION) --tag-prefix=v minor restclient/client.go
 
 ci: test-deps lint race-test
