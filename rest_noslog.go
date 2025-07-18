@@ -3,7 +3,7 @@
 
 package rest
 
-import log "github.com/inconshreveable/log15"
+import log "github.com/inconshreveable/log15/v3"
 
 // Logger logs information about incoming requests.
 var Logger log.Logger = log.New()
