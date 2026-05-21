@@ -1,7 +1,7 @@
 SHELL = /bin/bash -o pipefail
 
-BUMP_VERSION := $(GOPATH)/bin/bump_version
 STATICCHECK := $(GOPATH)/bin/staticcheck
+version ?= minor
 
 deps:
 	go get -u ./...
@@ -22,10 +22,8 @@ $(STATICCHECK):
 race-test: lint
 	go test -race ./...
 
-$(BUMP_VERSION):
-	go install github.com/kevinburke/bump_version
-
-release: race-test | $(BUMP_VERSION)
-	$(BUMP_VERSION) --tag-prefix=v minor restclient/client.go
+.PHONY: release
+release: race-test
+	go run github.com/kevinburke/bump_version@latest --tag-prefix=v $(version) restclient/version.go
 
 ci: test-deps lint race-test
