@@ -12,7 +12,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/kevinburke/rest/resterror"
+	"github.com/kevinburke/rest/v2/resterror"
 )
 
 type UploadType string

@@ -1,4 +1,4 @@
-module github.com/kevinburke/rest
+module github.com/kevinburke/rest/v2
 
 go 1.24.0
 

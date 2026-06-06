@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/kevinburke/rest/resterror"
+	"github.com/kevinburke/rest/v2/resterror"
 )
 
 func TestNormalizedGoVersion(t *testing.T) {

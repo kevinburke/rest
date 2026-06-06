@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	"github.com/kevinburke/rest/restclient"
+	"github.com/kevinburke/rest/v2/restclient"
 )
 
 func ExampleClient() {

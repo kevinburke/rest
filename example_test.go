@@ -11,8 +11,8 @@ import (
 	"net/http/httptest"
 	"strings"
 
-	"github.com/kevinburke/rest"
-	"github.com/kevinburke/rest/restclient"
+	"github.com/kevinburke/rest/v2"
+	"github.com/kevinburke/rest/v2/restclient"
 )
 
 func ExampleRegisterHandler() {

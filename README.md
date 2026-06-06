@@ -4,6 +4,19 @@ This library contains a HTTP client, and a number of useful middlewares for
 writing a HTTP client and server in Go. For more information and package
 documentation, please [see the godoc documentation][gddo].
 
+## Install
+
+    go get github.com/kevinburke/rest/v2
+
+Import the packages you need:
+
+```go
+import (
+	"github.com/kevinburke/rest/v2"
+	"github.com/kevinburke/rest/v2/restclient"
+)
+```
+
 ### Client
 
 The `Client` struct makes it easy to interact with a JSON API.
@@ -112,4 +125,4 @@ Donations free up time to make improvements to the library, and respond to
 bug reports. You can send donations via Paypal's "Send Money" feature to
 kev@inburke.com. Donations are not tax deductible in the USA.
 
-[gddo]: https://godoc.org/github.com/kevinburke/rest
+[gddo]: https://pkg.go.dev/github.com/kevinburke/rest/v2
