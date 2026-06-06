@@ -2,15 +2,28 @@
 
 This file summarizes the notable changes in each release.
 
-## 2.12.1 (Unreleased)
+## 2.14.0 - 2026-06-05
 
-- Snapshot date: 2026-04-04.
-- Since `2.12.0`, trimmed development user-agent version strings so they stay
-  stable and readable.
+- Moved the module path to `github.com/kevinburke/rest/v2`. The module had
+  been tagged `v2.x` since `2.0`, but `go.mod` lacked the `/v2` major-version
+  suffix that Go modules require, so the tooling ignored every `v2.x` tag.
+  Consumers must now import `github.com/kevinburke/rest/v2` (and
+  `.../v2/restclient`, `.../v2/resterror`).
+- Added an Install section to the README documenting the new import path.
+- Made the release target's version bump configurable via `make release
+  version=...`.
+- Bumped `actions/checkout` to 6.0.2.
+
+## 2.13.0 - 2026-05-21
+
+- Trimmed development user-agent version strings so they stay stable and
+  readable.
 - Removed use of the deprecated `net.Dialer.DualStack` field from
   `restclient`.
+- Documented how to wrap a `*Transport` to inspect response headers (e.g.
+  rate limits) in the README.
 - Refreshed CI coverage for newer Go versions and dependency updates.
-- Added daily Dependabot updates for GitHub Actions.
+- Added daily Dependabot updates for GitHub Actions, with a 7-day cooldown.
 
 ## 2.12.0 - 2025-07-18
 
